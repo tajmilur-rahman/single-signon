@@ -1,5 +1,5 @@
 <?php
-
+	//create by huao
 	require_once 'clientSever.class.php';
 	
 	$clientServer=new clientServer();
