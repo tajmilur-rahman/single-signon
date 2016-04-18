@@ -1,5 +1,5 @@
 <?php
-	//create by huao
+	//create by huao  sdfs
 	require_once 'clientSever.class.php';
 	
 	$clientServer=new clientServer();
