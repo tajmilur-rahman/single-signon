@@ -2,7 +2,6 @@
 	/**
 	 * This file includes what is needed by the simpleusers system
 	 */
-	$path = dirname(__FILE__);
-
-	include($path."/config.inc.php");
-	include($path."/users.obj.php");
+	require_once("/serverA/simpleusers/config.inc.php");
+	require_once("/serverA/simpleusers/users.obj.php");
+?>
