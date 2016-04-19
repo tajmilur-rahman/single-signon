@@ -1,39 +1,32 @@
 <?php
-
+error_reporting(E_ALL);
 	/**
-	* Make sure you started your'e sessions!
-	* You need to include su.inc.php to make SimpleUsers Work
-	* After that, create an instance of SimpleUsers and your'e all set!
-	*/
-
+	 * Make sure you started your'e sessions!
+	 * You need to include su.inc.php to make SimpleUsers Work
+	 * After that, create an instance of SimpleUsers and your'e all set!
+	 */
 	session_start();
-	require_once(dirname(__FILE__)."/simpleusers/su.inc.php");
-
-	$SimpleUsers = new SimpleUsers();
+	include("/serverA/simpleusers/su.inc.php");
 
 	// Login from post data
-	if( isset($_POST["username"]) )
-	{
-
+	if( isset($_POST["username"]) ){
+		$SimpleUsers = new SimpleUsers();
 		// Attempt to login the user - if credentials are valid, it returns the users id, otherwise (bool)false.
 		$res = $SimpleUsers->loginUser($_POST["username"], $_POST["password"]);
 		if(!$res)
 			$error = "You supplied the wrong credentials.";
-		else
-		{
-				header("Location: users.php");
-				exit;
+		else{
+			header("Location: users.php");
+			exit;
 		}
-
 	} // Validation end
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title></title>
-	  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	  <style type="text/css">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="text/css">
 
 			* {	margin: 0px; padding: 0px; }
 			body
@@ -68,11 +61,10 @@
 	  	p { margin: 10px 0px; }
 	  	p.faded { color: #A0A0A0; }
 
-	  </style>
+		</style>
 	</head>
 	<body>
-
-		<h1>Facebook Login</h1>
+		<h1>Login to Server A</h1>
 
 		<?php if( isset($error) ): ?>
 		<p>
