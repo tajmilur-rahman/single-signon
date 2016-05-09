@@ -27,6 +27,8 @@
 * @package PrestaShopWebservice
 */
 
+include_once 'libraries/authcode.php';
+
 // Here we define constants /!\ You need to replace this parameters
 define('DEBUG', false);
 //define('PS_SHOP_PATH', 'http://engentive.development/channelassistredeem/');
@@ -45,6 +47,8 @@ try
 {
 	$webService = new PrestaShopWebservice(PS_SHOP_PATH, PS_WS_AUTH_KEY, DEBUG);
 	$opt = array('resource' => 'customers');
+	
+	
 	if (isset($_GET['Create']))   //user want creat a new resource record
 		$xml = $webService->get(array('url' => PS_SHOP_PATH.'/api/customers?schema=blank'));
 	else                          //user first run this file ,get a list of exist record
@@ -86,11 +90,20 @@ if (count($_POST) > 0)           //user post a new record include many post vari
 	{
 		$opt = array('resource' => 'customers');
 			$opt['postXml'] = $xml->asXML();
-			$xml = $webService->add($opt);
-			echo "Successfully added.";
-			header("Location: http://engentive.development/channelassistredeem/?email=john@channelassist.ca");
-
-		//$webService->login();
+			//$xml = $webService->add($opt);
+			echo "Successfully added.</br>";
+			//header("Location: http://engentive.development/channelassistredeem/?email=john@channelassist.ca&&password=klf12345");
+			
+			$str = 'email=huao@gmail.com&password=klf12345';
+			$key = PS_WS_AUTH_KEY;
+			$urlParameters=authcode($str,'ENCODE',$key,0);
+//			echo authcode($str,'ENCODE',$key,0).'</br>';
+// 			echo "dddddddddddd</br>";
+// 			$str = '13a4N9tpMXcfqmfoCl+7o51WQP2HDxysr0HCYZIoqz0+9e2uYKuwi0uZGc83W1JXeI8okL1SNm9wJlwU5MtmpX8PdQ';
+// 			echo authcode($str,'DECODE',$key,0);
+			
+			header("Location: http://engentive.development/channelassistredeem/?".$urlParameters);
+			
 	}
 	catch (PrestaShopWebserviceException $ex)
 	{
