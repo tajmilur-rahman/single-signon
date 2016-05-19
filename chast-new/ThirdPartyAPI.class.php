@@ -125,6 +125,7 @@ class ThirdPartyAPI
 				$opt ['postXml'] = $xml->asXML ();
 				$xml = $webService->add ( $opt );
 				echo "Successfully added.</br>";
+				unset($_POST);
 				//add points for this new customer
 				$customerId=$this->customerExist($webService, $customer);
 				if ($customerId!=null) {
@@ -164,6 +165,7 @@ class ThirdPartyAPI
 			$xmlAccounts = $webService->add($optAccounts);
 		
 			echo "customer account Successfully added.</br>";
+			unset($_POST);
 		}
 		catch (PrestaShopWebserviceException $ex)
 		{
