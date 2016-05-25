@@ -38,7 +38,8 @@ class ThirdPartyAPI
 				$this->addNewCustomer($webService,$this->customer);
 			}			
 			else 
-			{
+			{				
+				$this->updateCustomer($webService,$customerId,$this->customer);
 				//add new points for exist customer
 				$points=$this->points;
 				if ($points!=0) {
@@ -196,6 +197,46 @@ class ThirdPartyAPI
 		return $customerId;
 	}
 
+	protected function updateCustomer($webService,$customerId,$customer) {
+		$opt = array('resource' => 'customers');
+		$opt['id'] = $customerId;
+		$xml = $webService->get($opt);
+		$resources = $xml->children ()->children ();
+		//$this->fillPostData ( $resources, $customer );
+// 		foreach ($resources as $key => $resource)
+// 		{
+// 			$_POST[$key]=$resource;
+// 		}
+		$_POST["passwd"]=$customer->getPasswd();
+		if (count ( $_POST ) > 0) // user post a new record include many post variable
+		{
+			// Here we have XML before update, lets update XML
+			foreach ( $resources as $nodeKey => $node ) {
+				if ($nodeKey=="passwd") {
+					$resources->$nodeKey = $_POST [$nodeKey];
+				}							
+			}
+			try {
+				$opt = array ('resource' => 'customers');
+				$opt['putXml'] = $xml->asXML ();
+				$opt['id'] = $customerId;
+				$xml = $webService->edit($opt);	
+				echo "Successfully updated.</br>";
+				unset($_POST);
+				//add points for this new customer
+			} 
+			catch ( PrestaShopWebserviceException $ex ) {
+				// Here we are dealing with errors
+				$trace = $ex->getTrace ();
+				if ($trace [0] ['args'] [0] == 404)
+					echo 'Bad ID';
+				else if ($trace [0] ['args'] [0] == 401)
+					echo 'Bad auth key';
+				else
+					echo 'Other error<br />' . $ex->getMessage ();
+			}
+		}
+	}
 }
 
 

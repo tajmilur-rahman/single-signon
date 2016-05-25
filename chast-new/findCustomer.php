@@ -4,13 +4,12 @@ require_once 'Customer.class.php';
 
 $email=$_GET["email"];
 $passwd=$_GET["passwd"];
-
 try {
-	$conn=new PDO("mysql:host=$host;dbname=$dbname",$user,$pass);
+	$conn=new PDO("mysql:host=$host;dbname=$dbname",$user,$pass);	
 	$oneCustomer=new Customer();
 	$oneCustomer->setEmail($email);
 	$oneCustomer->setPasswd($passwd);
-	
+
 	$oneCustomer=unserialize($oneCustomer->getCustomerByEmail($conn));
 
 	
