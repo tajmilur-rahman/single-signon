@@ -10,7 +10,7 @@ define('PS_SHOP_NAME','chast-demo');
 
 $oneCustomer=new Customer();
 $oneCustomer=unserialize($_SESSION["Customer"]);
-$points=$_GET["points"];
+$points="";
 $thirdPartyAPI=new ThirdPartyAPI(PS_URL, PS_WS_AUTH_KEY,$oneCustomer,$points,PS_SHOP_NAME,DEBUG);
 $thirdPartyAPI->login();
 
