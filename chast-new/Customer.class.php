@@ -2,7 +2,7 @@
 
 class Customer{
 	
-	public  $customerId,$gender,$lang,$company,$firstName,$lastName,$email,$passwd,$newsletter,
+	protected $customerId,$gender,$lang,$company,$firstName,$lastName,$email,$passwd,$newsletter,
 	$optin,$birthday,$website,$maxPaymentDays,$note,$hireDate,$department,$jobTitle,$avatar;
 	//it is better not to create connection by class
 	

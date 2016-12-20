@@ -1,7 +1,7 @@
 <?php
 require_once 'Customer.class.php';
 include_once 'libraries/authcode.php';
-require_once('PSWebServiceLibrary.php');
+require_once 'PSWebServiceLibrary.php';
 
 class ThirdPartyAPI
 {
@@ -26,7 +26,12 @@ class ThirdPartyAPI
 		$this->debug = $debug;
 	}
 	
-	public function login()
+	/**
+	 * This function is used to synchronize customer and points information with engentive system.
+	 * if customer does not exist in engentive, it will add new customer and initial points,
+	 * if customer exist,it will update customer password with engentive and add the points.
+	 */	
+	public function synchronizeInformation()
 	{
 		try
 		{
@@ -47,11 +52,6 @@ class ThirdPartyAPI
 					$this->addNewPoints($webService, $customerId, $points);
 				}			
 			}
-			
-			//login to engentive with email and password
-			$email=$this->customer->getEmail();
-			$passwd=$this->customer->getPasswd();
-			$this->sendInformation($email, $passwd);
 		}
 		catch (PrestaShopWebserviceException $e)
 		{
@@ -61,6 +61,17 @@ class ThirdPartyAPI
 			else if ($trace[0]['args'][0] == 401) echo 'Bad auth key';
 			else echo 'Other error<br />'.$e->getMessage();
 		}
+	}
+	
+	/**
+	 * This function is used to login to engentive with email and password.
+	 */
+	public function login()
+	{
+		//login to engentive with email and password
+		$email=$this->customer->getEmail();
+		$passwd=$this->customer->getPasswd();
+		$this->sendInformation($email, $passwd);
 	}
 	
 	/**
@@ -110,7 +121,12 @@ class ThirdPartyAPI
 		$_POST["job_title"]=$customer->getJobTitle();
 		$_POST["avatar"]=$customer->getAvatar();
 	}
-	
+
+	/**
+	 * This function is used to add new customer in engentive system
+	 * @param object $webService
+	 * @param object $customer
+	 */
 	protected function addNewCustomer($webService,$customer) 
 	{
 		$xml = $webService->get ( array ('url' => $this->url . '/api/customers?schema=blank' ) );
@@ -127,8 +143,7 @@ class ThirdPartyAPI
 				$opt ['postXml'] = $xml->asXML ();
 				$xml = $webService->add( $opt );
 
-				echo "Successfully added.</br>";
-
+				echo "New customer successfully added in engentive.</br>";
 				unset($_POST);
 
 				//add points for this new customer
@@ -151,11 +166,16 @@ class ThirdPartyAPI
 		}
 	}
 
+	/**
+	 * This function is used to add new points in engentive system
+	 * @param object $webService
+	 * @param int $customerId
+	 * @param int $points
+	 */
 	protected function addNewPoints($webService,$customerId,$points) {
 		$xmlAccounts = $webService->get(array('url' => $this->url.'/api/customer_account?schema=blank'));
 		$resources = $xmlAccounts->children()->children();
-		
-		//$_POST['id']="";
+		$_POST['id']="";
 		$_POST['id_customer']=$customerId;
 		$_POST['amount']=$points;
 		$_POST['date_add']=date('Y-m-d H:i:s');
@@ -170,7 +190,7 @@ class ThirdPartyAPI
 			$optAccounts['postXml'] = $xmlAccounts->asXML();
 			$xmlAccounts = $webService->add($optAccounts);
 		
-			echo "customer account Successfully added.</br>";
+			echo "Customer account successfully added in engentive.</br>";
 			unset($_POST);
 		}
 		catch (PrestaShopWebserviceException $ex)
@@ -203,16 +223,18 @@ class ThirdPartyAPI
 		return $customerId;
 	}
 
+	/**
+	 * This function is used to update customer password in engentive system
+	 * @param object $webService
+	 * @param int $customerId
+	 * @param object $customer
+	 */
 	protected function updateCustomer($webService,$customerId,$customer) {
 		$opt = array('resource' => 'customers');
 		$opt['id'] = $customerId;
 		$xml = $webService->get($opt);
 		$resources = $xml->children ()->children ();
-		//$this->fillPostData ( $resources, $customer );
-// 		foreach ($resources as $key => $resource)
-// 		{
-// 			$_POST[$key]=$resource;
-// 		}
+
 		$_POST["passwd"]=$customer->getPasswd();
 		if (count ( $_POST ) > 0) // user post a new record include many post variable
 		{
@@ -227,7 +249,7 @@ class ThirdPartyAPI
 				$opt['putXml'] = $xml->asXML ();
 				$opt['id'] = $customerId;
 				$xml = $webService->edit($opt);	
-				echo "Successfully updated.</br>";
+				echo "Customer information successfully updated in engentive.</br>";
 				unset($_POST);
 				//add points for this new customer
 			} 
