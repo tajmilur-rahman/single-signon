@@ -17,10 +17,10 @@ class ThirdPartyAPI
 	protected $shopName;
 	protected $points;
 	
-	function __construct($url, $key, $customer,$points,$shopName,$debug) {
+	function __construct($url, $key, $customer, $points, $shopName, $debug) {
 		$this->url = $url;
 		$this->key = $key;
-		$this->customer=$customer;
+		$this->customer = $customer;
 		$this->points=$points;
 		$this->shopName=$shopName;
 		$this->debug = $debug;
@@ -31,19 +31,20 @@ class ThirdPartyAPI
 		try
 		{
 			$webService = new PrestaShopWebservice($this->url, $this->key, $this->debug);		
-			$customerId=$this->customerExist($webService,$this->customer);
+			$customerId = $this->customerExist($webService, $this->customer);
 			
-			if ($customerId==null)        //engentive have not this email information, should add a new customer
+			//If this customer id not already in engentive database, we will create a new customer
+			if ($customerId == null)
 			{
-				$this->addNewCustomer($webService,$this->customer);
+				$this->addNewCustomer($webService, $this->customer);
 			}			
 			else 
 			{				
-				$this->updateCustomer($webService,$customerId,$this->customer);
+				$this->updateCustomer($webService, $customerId, $this->customer);
 				//add new points for exist customer
-				$points=$this->points;
-				if ($points!=0) {
-					$this->addNewPoints($webService,$customerId,$points);
+				$points = $this->points;
+				if ($points != 0) {
+					$this->addNewPoints($webService, $customerId, $points);
 				}			
 			}
 			
@@ -67,12 +68,12 @@ class ThirdPartyAPI
 	 * @param string $email
 	 * @param string $passwd
 	 */
-	protected function sendInformation($email,$passwd)
+	protected function sendInformation($email, $passwd)
 	{
 		$str = 'email='.$email.'&password='.$passwd;
 		$key = $this->shopName;
-		$urlParameters=authcode($str,'ENCODE',$key,0);
-		$urlParameters=authcode($urlParameters,'ENCODE',$key,0);			
+		$urlParameters = authcode($str, 'ENCODE', $key, 0);
+		$urlParameters = authcode($urlParameters, 'ENCODE',$key,0);			
 		header("Location: ".$this->url."?key=".$key."&&&".$urlParameters);				
 	}
 	
@@ -114,7 +115,7 @@ class ThirdPartyAPI
 	{
 		$xml = $webService->get ( array ('url' => $this->url . '/api/customers?schema=blank' ) );
 		$resources = $xml->children ()->children ();
-		$this->fillPostData ( $resources, $customer );
+		$this->fillPostData( $resources, $customer );
 		if (count ( $_POST ) > 0) // user post a new record include many post variable
 		{
 			// Here we have XML before update, lets update XML
@@ -122,16 +123,19 @@ class ThirdPartyAPI
 				$resources->$nodeKey = $_POST [$nodeKey];
 			}
 			try {
-				$opt = array ('resource' => 'customers');
+				$opt = array('resource' => 'customers');
 				$opt ['postXml'] = $xml->asXML ();
-				$xml = $webService->add ( $opt );
+				$xml = $webService->add( $opt );
+
 				echo "Successfully added.</br>";
+
 				unset($_POST);
+
 				//add points for this new customer
-				$customerId=$this->customerExist($webService, $customer);
-				if ($customerId!=null) {
-					$points=$this->points;
-					$this->addNewPoints($webService,$customerId,$points);
+				$customerId = $this->customerExist($webService, $customer);
+				if ($customerId != null) {
+					$points = $this->points;
+					$this->addNewPoints($webService, $customerId, $points);
 				}
 			} 
 			catch ( PrestaShopWebserviceException $ex ) {
@@ -146,6 +150,7 @@ class ThirdPartyAPI
 			}
 		}
 	}
+
 	protected function addNewPoints($webService,$customerId,$points) {
 		$xmlAccounts = $webService->get(array('url' => $this->url.'/api/customer_account?schema=blank'));
 		$resources = $xmlAccounts->children()->children();
@@ -184,16 +189,17 @@ class ThirdPartyAPI
 	 * @param object $customer
 	 * @return $customerId or null
 	 */	
-	protected function customerExist($webService,$customer)
+	protected function customerExist($webService, $customer)
 	{
-		$email=$customer->getEmail();
+		$email = $customer->getEmail();
 		$opt = array (
 				'resource' => 'customers',
 				'filter[email]' => $email 
 		);
-		$xml = $webService->get ( $opt );
-		$resources = $xml->children ()->children (); // get the content in xml response
-		$customerId = $resources->customer [0] ['id'];
+		$xml = $webService->get( $opt );
+		$resources = $xml->children()->children(); // get the content in xml response
+		$customerId = $resources->customer[0]['id'];
+		
 		return $customerId;
 	}
 

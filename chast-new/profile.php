@@ -49,7 +49,7 @@ require_once 'Customer.class.php';
 					<td><input type="text" name="points"/></td>
 				</tr>	
 			</table>
-			<a href="" onclick="document.forms[0].submit();return false;">go to channelassistredeem</a>
+			<a href="" onclick="document.forms[0].submit();return false;">Save</a>
 		</form>
 	</div>
 

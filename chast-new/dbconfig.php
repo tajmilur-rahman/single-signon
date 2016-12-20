@@ -1,8 +1,8 @@
 <?php
 
-$host="localhost";
+$host="192.168.1.51";
 $user="root";
-$pass="";
+$pass="123456";
 $dbname="channelassist";
 
 ?>
