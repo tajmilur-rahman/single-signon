@@ -1,7 +1,7 @@
 <?php
 require_once 'Customer.class.php';
 include_once 'libraries/authcode.php';
-require_once 'PSWebServiceLibrary.php';
+require_once 'EngentiveWebServiceLibrary.php';
 
 class ThirdPartyAPI
 {

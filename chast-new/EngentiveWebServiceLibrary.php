@@ -1,5 +1,5 @@
 <?php
-classervice
+class EngentiveWebSrvice
 {
 
 	/** @var string Shop URL */
