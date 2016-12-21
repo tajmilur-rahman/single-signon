@@ -14,22 +14,23 @@ require_once 'dbconfig.php';
 include 'heading.php';
 require_once 'Customer.class.php';
 require_once 'Account.class.php';
-require_once 'ThirdPartyAPI.class.php';
+require_once 'EngentiveAPI.class.php';
 
 define('DEBUG', false);
-define('PS_URL', 'http://engentive.development/channelassistredeem/');		// Root path of your PrestaShop store
+define('PS_URL', 'http://engentive.development/cgiuk/');		// Root path of your PrestaShop store
 define('PS_WS_AUTH_KEY', 'HQI22G44IE4JD8H2RGQE7N1Z6NH3Z418');	// Auth key (Get it in your Back Office)
-define('PS_SHOP_NAME','chast-demo');
+define('PS_SHOP_NAME','cgiuk');
 ?>
 </div>
 <div style="background: lightblue;width:100%">
 
 <?php 
-	$oneCustomer=unserialize($_SESSION["Customer"]);
-	$id=$oneCustomer->getCustomerId();
-	$lastName=$oneCustomer->getLastName();
-	$firstName=$oneCustomer->getFirstName();
-	$email=$oneCustomer->getEmail();
+	$customer 	= unserialize($_SESSION["Customer"]);
+	$id		= $customer->getCustomerId();
+	$lastName 	= $customer->getLastName();
+	$firstName 	= $customer->getFirstName();
+	$email 		= $customer->getEmail();
+	$token 		= '4G78jy980H^oiua0sd9f80@8d85l80518kjuy89kh$7f';
 ?>
 	<div class="div1">
 	<h1>User Profile</h1>
@@ -63,10 +64,9 @@ define('PS_SHOP_NAME','chast-demo');
 			
 			<input type="submit" value="Save"/>
 			<input type="submit" value="Reset" name="reset"/>	<br/>
-			<a href="ThirdPartyLogin.php">go to channelassistredeem</a>
+			<a href="engentivelogin.php?email=<?php echo $email; ?>&token=<?php echo $token; ?>">go to channelassistredeem</a>
 		</form>
 	</div>
-
 </div>
 </body>
 <?php 

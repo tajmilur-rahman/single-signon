@@ -34,13 +34,9 @@ class Customer{
 	function setPasswd($passwd){
 		$this->passwd=$passwd;
 	}
-// 	function setPhone($phone) {
-// 		$this->phone=$phone;
-// 	}
-	
 	
 	//implement CRUD
-	
+
 	function getCustomerByEmail($conn) {
 		$email=$this->email;
 		$passwd=$this->passwd;
@@ -80,5 +76,4 @@ class Customer{
 		return serialize($tObj);
 	}
 }
-
 ?>

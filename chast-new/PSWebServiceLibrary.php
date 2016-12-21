@@ -1,35 +1,5 @@
 <?php
-/*
-* 2007-2013 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Open Software License (OSL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/osl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2013 PrestaShop SA
-*  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-* PrestaShop Webservice Library
-* @package PrestaShopWebservice
-*/
-
-/**
- * @package PrestaShopWebservice
- */
-class PrestaShopWebservice
+classervice
 {
 
 	/** @var string Shop URL */
@@ -44,21 +14,21 @@ class PrestaShopWebservice
 	/** @var string PS version */
 	protected $version;
 
-	/** @var array compatible versions of PrestaShop Webservice */
+	/** @var array compatible versions of Engentive Webservice */
 	const psCompatibleVersionsMin = '1.4.0.0';
 	const psCompatibleVersionsMax = '1.6.1.5';
 
 	/**
-	 * PrestaShopWebservice constructor. Throw an exception when CURL is not installed/activated
+	 * EngentiveWebservice constructor. Throw an exception when CURL is not installed/activated
 	 * <code>
 	 * <?php
-	 * require_once('./PrestaShopWebservice.php');
+	 * require_once('./EngentiveWebservice.php');
 	 * try
 	 * {
-	 * 	$ws = new PrestaShopWebservice('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
+	 * 	$ws = new EngentiveWebservice('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
 	 * 	// Now we have a webservice object to play with
 	 * }
-	 * catch (PrestaShopWebserviceException $ex)
+	 * catch (EngentiveWebserviceException $ex)
 	 * {
 	 * 	echo 'Error : '.$ex->getMessage();
 	 * }
@@ -70,7 +40,7 @@ class PrestaShopWebservice
 	*/
 	function __construct($url, $key, $debug = true) {
 		if (!extension_loaded('curl'))
-		  throw new PrestaShopWebserviceException('Please activate the PHP extension \'curl\' to allow use of PrestaShop webservice library');
+		  throw new EngentiveWebserviceException('Please activate the PHP extension \'curl\' to allow use of Engentive webservice library');
 		$this->url = $url;
 		$this->key = $key;
 		$this->debug = $debug;
@@ -83,21 +53,21 @@ class PrestaShopWebservice
 	 */
 	protected function checkStatusCode($status_code)
 	{
-		$error_label = 'This call to PrestaShop Web Services failed and returned an HTTP status of %d. That means: %s.';
+		$error_label = 'This call to Engentive Web Services failed and returned an HTTP status of %d. That means: %s.';
 		switch($status_code)
 		{
 			case 200:	case 201:	break;
-			case 204: throw new PrestaShopWebserviceException(sprintf($error_label, $status_code, 'No content'));break;
-			case 400: throw new PrestaShopWebserviceException(sprintf($error_label, $status_code, 'Bad Request'));break;
-			case 401: throw new PrestaShopWebserviceException(sprintf($error_label, $status_code, 'Unauthorized'));break;
-			case 404: throw new PrestaShopWebserviceException(sprintf($error_label, $status_code, 'Not Found'));break;
-			case 405: throw new PrestaShopWebserviceException(sprintf($error_label, $status_code, 'Method Not Allowed'));break;
-			case 500: throw new PrestaShopWebserviceException(sprintf($error_label, $status_code, 'Internal Server Error'));break;
-			default: throw new PrestaShopWebserviceException('This call to PrestaShop Web Services returned an unexpected HTTP status of:' . $status_code);
+			case 204: throw new EngentiveWebserviceException(sprintf($error_label, $status_code, 'No content'));break;
+			case 400: throw new EngentiveWebserviceException(sprintf($error_label, $status_code, 'Bad Request'));break;
+			case 401: throw new EngentiveWebserviceException(sprintf($error_label, $status_code, 'Unauthorized'));break;
+			case 404: throw new EngentiveWebserviceException(sprintf($error_label, $status_code, 'Not Found'));break;
+			case 405: throw new EngentiveWebserviceException(sprintf($error_label, $status_code, 'Method Not Allowed'));break;
+			case 500: throw new EngentiveWebserviceException(sprintf($error_label, $status_code, 'Internal Server Error'));break;
+			default: throw new EngentiveWebserviceException('This call to Engentive Web Services returned an unexpected HTTP status of:' . $status_code);
 		}
 	}
 	/**
-	 * Handles a CURL request to PrestaShop Webservice. Can throw exception.
+	 * Handles a CURL request to Engentive Webservice. Can throw exception.
 	 * @param string $url Resource name
 	 * @param mixed $curl_params CURL parameters (sent to curl_set_opt)
 	 * @return array status_code, response
@@ -132,7 +102,7 @@ class PrestaShopWebservice
 
 		$index = strpos($response, "\r\n\r\n");
 		if ($index === false && $curl_params[CURLOPT_CUSTOMREQUEST] != 'HEAD')
-			throw new PrestaShopWebserviceException('Bad HTTP response');
+			throw new EngentiveWebserviceException('Bad HTTP response');
 
 		$header = substr($response, 0, $index);
 		$body = substr($response, $index + 4);
@@ -152,10 +122,10 @@ class PrestaShopWebservice
 		{
 			$this->version = $headerArray['PSWS-Version'];
 			if (
-				version_compare(PrestaShopWebservice::psCompatibleVersionsMin, $headerArray['PSWS-Version']) == 1 ||
-				version_compare(PrestaShopWebservice::psCompatibleVersionsMax, $headerArray['PSWS-Version']) == -1
+				version_compare(EngentiveWebservice::psCompatibleVersionsMin, $headerArray['PSWS-Version']) == 1 ||
+				version_compare(EngentiveWebservice::psCompatibleVersionsMax, $headerArray['PSWS-Version']) == -1
 			)
-			throw new PrestaShopWebserviceException('This library is not compatible with this version of PrestaShop. Please upgrade/downgrade this library');
+			throw new EngentiveWebserviceException('This library is not compatible with this version of Engentive. Please upgrade/downgrade this library');
 		}
 
 		if ($this->debug)
@@ -166,7 +136,7 @@ class PrestaShopWebservice
 		}
 		$status_code = curl_getinfo($session, CURLINFO_HTTP_CODE);
 		if ($status_code === 0)
-			throw new PrestaShopWebserviceException('CURL Error: '.curl_error($session));
+			throw new EngentiveWebserviceException('CURL Error: '.curl_error($session));
 		curl_close($session);
 		if ($this->debug)
 		{
@@ -204,12 +174,12 @@ class PrestaShopWebservice
 			{
 				$msg = var_export(libxml_get_errors(), true);
 				libxml_clear_errors();
-				throw new PrestaShopWebserviceException('HTTP XML response is not parsable: '.$msg);
+				throw new EngentiveWebserviceException('HTTP XML response is not parsable: '.$msg);
 			}
 			return $xml;
 		}
 		else
-			throw new PrestaShopWebserviceException('HTTP response is empty');
+			throw new EngentiveWebserviceException('HTTP response is empty');
 	}
 
 	/**
@@ -235,7 +205,7 @@ class PrestaShopWebservice
 				$url .= '&id_group_shop='.$options['id_group_shop'];
 		}
 		else
-			throw new PrestaShopWebserviceException('Bad parameters given');
+			throw new EngentiveWebserviceException('Bad parameters given');
 		$request = self::executeRequest($url, array(CURLOPT_CUSTOMREQUEST => 'POST', CURLOPT_POSTFIELDS => $xml));
 
 		self::checkStatusCode($request['status_code']);
@@ -252,16 +222,16 @@ class PrestaShopWebservice
 	 * </p>
 	 * <code>
 	 * <?php
-	 * require_once('./PrestaShopWebservice.php');
+	 * require_once('./EngentiveWebservice.php');
 	 * try
 	 * {
-	 * $ws = new PrestaShopWebservice('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
+	 * $ws = new EngentiveWebservice('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
 	 * $xml = $ws->get(array('resource' => 'orders', 'id' => 1));
 	 *	// Here in $xml, a SimpleXMLElement object you can parse
 	 * foreach ($xml->children()->children() as $attName => $attValue)
 	 * 	echo $attName.' = '.$attValue.'<br />';
 	 * }
-	 * catch (PrestaShopWebserviceException $ex)
+	 * catch (EngentiveWebserviceException $ex)
 	 * {
 	 * 	echo 'Error : '.$ex->getMessage();
 	 * }
@@ -290,7 +260,7 @@ class PrestaShopWebservice
 				$url .= '?'.http_build_query($url_params);
 		}
 		else
-			throw new PrestaShopWebserviceException('Bad parameters given');
+			throw new EngentiveWebserviceException('Bad parameters given');
 
 		$request = self::executeRequest($url, array(CURLOPT_CUSTOMREQUEST => 'GET'));
 
@@ -324,7 +294,7 @@ class PrestaShopWebservice
 				$url .= '?'.http_build_query($url_params);
 		}
 		else
-			throw new PrestaShopWebserviceException('Bad parameters given');
+			throw new EngentiveWebserviceException('Bad parameters given');
 		$request = self::executeRequest($url, array(CURLOPT_CUSTOMREQUEST => 'HEAD', CURLOPT_NOBODY => true));
 		self::checkStatusCode($request['status_code']);// check the response validity
 		return $request['header'];
@@ -353,7 +323,7 @@ class PrestaShopWebservice
 				$url .= '&id_group_shop='.$options['id_group_shop'];
 		}
 		else
-			throw new PrestaShopWebserviceException('Bad parameters given');
+			throw new EngentiveWebserviceException('Bad parameters given');
 
 		$request = self::executeRequest($url,  array(CURLOPT_CUSTOMREQUEST => 'PUT', CURLOPT_POSTFIELDS => $xml));
 		self::checkStatusCode($request['status_code']);// check the response validity
@@ -361,26 +331,6 @@ class PrestaShopWebservice
 	}
 
 	/**
-	 * Delete (DELETE) a resource.
-	 * Unique parameter must take : <br><br>
-	 * 'resource' => Resource name<br>
-	 * 'id' => ID or array which contains IDs of a resource(s) you want to delete<br><br>
-	 * <code>
-	 * <?php
-	 * require_once('./PrestaShopWebservice.php');
-	 * try
-	 * {
-	 * $ws = new PrestaShopWebservice('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
-	 * $xml = $ws->delete(array('resource' => 'orders', 'id' => 1));
-	 *	// Following code will not be executed if an exception is thrown.
-	 * 	echo 'Successfully deleted.';
-	 * }
-	 * catch (PrestaShopWebserviceException $ex)
-	 * {
-	 * 	echo 'Error : '.$ex->getMessage();
-	 * }
-	 * ?>
-	 * </code>
 	 * @param array $options Array representing resource to delete.
 	 */
 	public function delete($options)
@@ -401,14 +351,9 @@ class PrestaShopWebservice
 		return true;
 	}
 
-// 	public function login()
-// 	{
-// 		//header("Location: http://engentive.development/channelassistredeem/");
-// 	}
-
 }
 
 /**
- * @package PrestaShopWebservice
+ * @package EngentiveWebservice
  */
-class PrestaShopWebserviceException extends Exception { }
+class EngentiveWebserviceException extends Exception { }
