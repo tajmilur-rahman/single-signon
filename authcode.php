@@ -1,4 +1,13 @@
 <?php
+/**
+ * This function is used to encode and decode customer informations.
+ * @param unknown $string
+ * @param string $operation
+ * @param string $key
+ * @param number $expiry
+ * @return string
+ * @author : William
+ */
 function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
 	$ckey_length = 4;
 	 
@@ -11,7 +20,6 @@ function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
 	$key_length = strlen($cryptkey);
 	$string = $operation == 'DECODE' ? base64_decode(substr($string, $ckey_length)) :
 	sprintf('%010d', $expiry ? $expiry + time() : 0).substr(md5($string.$keyb), 0, 16).$string;
-
 	$string_length = strlen($string);
 	$result = '';
 	$box = range(0, 255);

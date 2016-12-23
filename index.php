@@ -10,7 +10,6 @@ define('PS_SHOP_NAME','cgiuk');
 <h1>CGI UK Home Page</h1>
 <?php
 $email = "lineu@klfmedia.com";
-
 /** Get connected to database and get user information for anyone */
 try {
 	$con = mysql_connect($host, $user, $pass);
@@ -30,7 +29,7 @@ try {
 			//Generate the URI of the link to engentive that includes email + token_hash
 			$uri = authcode("email=".$row['email']."&&&hash=".$row['token_hash'], 'ENCODE', 'cgiuk', 0);
 			?>
-			<a href="http://engentive.development/cgiuk/en/?<?php echo $uri; ?>">Redeem Your Points</a>
+			<a href="http://engentive.development/cgiuk/en/?<?php echo urlencode($uri); ?>">Redeem Your Points</a>
 			<?php
 		}
 	}
