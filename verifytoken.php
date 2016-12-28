@@ -5,18 +5,15 @@ include_once "authcode.php";
 $valid = false;
 
 if(isset($_GET['p']) && trim($_GET['p'] != ''))
-{
-	$paramString = urldecode($_GET['p']);
-	var_dump($paramString);exit;
+{       
+	$paramString = $_GET['p'];
+
 	$uri = authcode($paramString, 'DECODE', 'cgiuk', 0);
-	
 	//Check in database if the email and hash combination is good
-	$con = mysql_connect($host, $user, $pass);
-        if (!$con) {
+	$conn = mysqli_connect(_DB_SERVER_,_DB_USER_,_DB_PASSWD_,_DB_NAME_);
+        if (!$conn) {
                 die('Could not connect: ' . mysql_error());
-        }else{  
-                mysql_select_db($dbname, $con);
-		
+        }else{  		
 		$tmp = explode ('&&&', $uri);
 
                 //check if have two parameter
@@ -31,9 +28,12 @@ if(isset($_GET['p']) && trim($_GET['p'] != ''))
 		}
 
                 $query = "select u.email, uth.token_hash from users u, user_token_hash uth where u.email=uth.email and u.email='".$email."' and token_hash='".$hash."'";
-                $result = mysql_query($query);
 
-                if(mysql_num_rows($result) > 0) {
+                $result = $conn->query($query);
+
+                $rowcount=mysqli_num_rows($result);
+
+                if($rowcount != 0) {
 			$valid = true;
 		}
 	}
