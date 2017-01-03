@@ -32,6 +32,7 @@ try {
 			<?php
 			//Generate the URI of the link to engentive that includes email + token_hash
 			$uri = authcode("email=".$res[0]['email']."&&&hash=".$res[0]['token_hash'], 'ENCODE', 'cgiuk', 0);
+			echo "http://engentive.development/cgiuk/en/?".urlencode($uri)."<br/>";
 			?>
 			<a href="http://engentive.development/cgiuk/en/?<?php echo urlencode($uri); ?>">Redeem Your Points</a>
 			<?php
