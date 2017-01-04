@@ -21,22 +21,18 @@ try {
         	$result = $conn->query($query);
 
         	while($row = $result->fetch_assoc()){
-		    	$res[] = $row;
-		    }
-		    //var_dump($res);
-	        //while($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
-	        {
-                	?>
-			You are logged in as <strong><?php echo $res[0]['email']; ?></strong>
-			<br />
-			<?php
-			//Generate the URI of the link to engentive that includes email + token_hash
-			$uri = authcode("email=".$res[0]['email']."&&&hash=".$res[0]['token_hash'], 'ENCODE', 'cgiuk', 0);
-			echo "http://engentive.development/cgiuk/en/?".urlencode($uri)."<br/>";
-			?>
-			<a href="http://engentive.development/cgiuk/en/?<?php echo urlencode($uri); ?>">Redeem Your Points</a>
-			<?php
+			$res[] = $row;
 		}
+               	?>
+		You are logged in as <strong><?php echo $res[0]['email']; ?></strong>
+		<br />
+		<?php
+		//Generate the URI of the link to engentive that includes email + token_hash
+		$uri = authcode("email=".$res[0]['email']."&&&hash=".$res[0]['token_hash'], 'ENCODE', 'cgiuk', 0);
+		echo "http://engentive.development/cgiuk/en/?".urlencode($uri)."<br/>";
+		?>
+		<a href="http://engentive.development/cgiuk/en/?<?php echo urlencode($uri); ?>">Redeem Your Points</a>
+		<?php
 	}
 }
 catch (PDOException $e){
